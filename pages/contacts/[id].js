@@ -7,26 +7,28 @@ import firebase from 'firebase/app';
 import 'firebase/firestore';
 import Header from '../../components/Header';
 
-const SingleEvent = ({itemData}) => {
+const SingleContact = ({itemData}) => {
   const AuthUser = useAuthUser();
   const [inputName, setInputName] = useState(itemData.name);
-  const [inputDate, setInputDate] = useState(itemData.date);
-  const [inputDesc, setInputDesc] = useState(itemData.desc);
+  const [inputMail, setInputMail] = useState(itemData.mail);
+  const [inputCell, setInputCell] = useState(itemData.cell);
+  const [inputAddress, setInputAddress] = useState(itemData.address);
   const [statusMsg, setStatusMsg] = useState('');
   
   const sendData = async () => {
     try {
       console.log("sending!");
       // try to update doc
-      const docref = await firebase.firestore().collection("events").doc(itemData.id);
+      const docref = await firebase.firestore().collection("contacts").doc(itemData.id);
       const doc = docref.get();
 
       if (!doc.empty) {
         docref.update(
           {
             name: inputName,
-            date: firebase.firestore.Timestamp.fromDate( new Date(inputDate) ),
-            desc: inputDesc
+            mail: inputMail,
+            cell: inputCell,
+            address: inputAddress
           }
         );
         setStatusMsg("Updated!");
@@ -48,9 +50,10 @@ const SingleEvent = ({itemData}) => {
             pointerEvents="none"
             children={<AddIcon color="gray.300" />}
           />
-          <Input type="text" value={inputName} onChange={(e) => setInputName(e.target.value)} placeholder="Event Title" />
-          <Input type="text" value={inputDate} onChange={(e) => setInputDate(e.target.value)} placeholder="Event Date" />
-          <Input type="text" value={inputDesc} onChange={(e) => setInputDesc(e.target.value)} placeholder="Event Description" />
+          <Input type="text" value={inputName} onChange={(e) => setInputName(e.target.value)} placeholder="Contact Name" />
+          <Input type="text" value={inputMail} onChange={(e) => setInputMail(e.target.value)} placeholder="Contact E-mail" />
+          <Input type="text" value={inputCell} onChange={(e) => setInputCell(e.target.value)} placeholder="Contact Phone Number" />
+          <Input type="text" value={inputAddress} onChange={(e) => setInputAddress(e.target.value)} placeholder="Contact Address" />
           <Button
             ml={2}
             onClick={() => sendData()}
@@ -74,7 +77,7 @@ export const getServerSideProps = withAuthUserTokenSSR(
   async ({ AuthUser, params }) => {
     // take the id parameter from the url and construct a db query with it
     const db = getFirebaseAdmin().firestore();
-    const doc = await db.collection("events").doc(params.id).get();
+    const doc = await db.collection("contacts").doc(params.id).get();
     let itemData;
     if (!doc.empty) {
       // document was found
@@ -82,8 +85,9 @@ export const getServerSideProps = withAuthUserTokenSSR(
       itemData = {
         id: doc.id,
         name: docData.name,
-        date: docData.date.toDate().toDateString(),
-        desc: docData.desc
+        mail: docData.mail,
+        cell: docData.cell,
+        address: docData.address
       };
     } else {
       // no document found
@@ -103,4 +107,4 @@ export default withAuthUser(
     whenUnauthedAfterInit: AuthAction.REDIRECT_TO_LOGIN,
     whenUnauthedBeforeInit: AuthAction.REDIRECT_TO_LOGIN
   }
-)(SingleEvent)
+)(SingleContact)

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react';
 import { Flex, Heading, InputGroup, InputLeftElement, Input, Button, Text, IconButton, Divider, Link,
 } from "@chakra-ui/react";
 import DarkModeSwitch from '../components/DarkModeSwitch';
@@ -10,19 +10,20 @@ import firebase from 'firebase/app';
 import 'firebase/firestore';
 import Header from '../components/Header';
 
-const Todo = () => {
+const Event = () => {
     const AuthUser = useAuthUser()
-    const [inputTodo, setInputTodo] = useState('')
+    const [inputName, setInputName] = useState('')
+    const [inputMail, setInputMail] = useState('')
+    const [inputCell, setInputCell] = useState('')
+    const [inputAddress, setInputAddress] = useState('')
     const [events, setEvents] = useState([])
 
-    // console.log(AuthUser)
-    // console.log(todos)
-    
-        useEffect(() => {
+
+    useEffect(() => {
         AuthUser.id &&
             firebase
                 .firestore()
-                .collection("todos")
+                .collection("contacts")
                 .where( 'user', '==', AuthUser.id )
                 .onSnapshot(
                   snapshot => {
@@ -31,35 +32,44 @@ const Todo = () => {
                         doc => {
                           return {
                             eventID: doc.id,
-                            eventTodo: doc.data().todo
+                            eventName: doc.data().name,
+                            eventMail: doc.data().mail,
+                            eventCell: doc.data().cell,
+                            eventAddress: doc.data().address
                           }}));
                 })
     })
-    
-        const sendData = () => {
+
+    const sendData = () => {
         try {
             // try to update doc
             firebase
                 .firestore()
-                .collection("todos") // all users share one collec
+                .collection("contacts") // all users share one collec
                 .add({
-                    todo: inputTodo,
+                    name: inputName,
+                    mail: inputMail,
+                    cell: inputCell,
+                    address: inputAddress,
                     timestamp: firebase.firestore.FieldValue.serverTimestamp(),
                     user: AuthUser.id
                 })
                 .then(console.log('Data was successfully sent to cloud firestore!'))
             // flush out the user entered values in the input elements on onscreen
-            setInputTodo('');
+            setInputName('');
+            setInputMail('');
+            setInputCell('');
+            setInputAddress('');
         } catch (error) {
             console.log(error)
         }
     }
 
-    const deleteTodo = (t) => {
+    const deleteEvent = (t) => {
         try {
             firebase
                 .firestore()
-                .collection("todos")
+                .collection("contacts")
                 .doc(t)
                 .delete()
                 .then(console.log('Data was successfully deleted!'))
@@ -70,10 +80,11 @@ const Todo = () => {
 
     return (
       <div>
-        <Header email={AuthUser.email} signOut={AuthUser.signOut} />
+      <Header email={AuthUser.email} signOut={AuthUser.signOut} />
         <Flex flexDir="column" maxW={800} align="center" justify="center" minH="60vh" m="auto" px={4}>
             <Flex justify="space-between" w="100%" align="center">
-                <Heading mb={4} pb={4} mt={10}>Todos</Heading>
+                <Heading mb={4} pb={4} mt={-10}>Contacts</Heading>
+
             </Flex>
 
             <InputGroup>
@@ -81,12 +92,15 @@ const Todo = () => {
                     pointerEvents="none"
                     children={<AddIcon color="gray.300" />}
                 />
-                <Input type="text" value={inputTodo} onChange={(e) => setInputTodo(e.target.value)} placeholder="Learn Chakra-UI & Next.js" />
+                <Input type="text" value={inputName} onChange={(e) => setInputName(e.target.value)} placeholder="Contact Name" />
+                <Input type="text" value={inputMail} onChange={(e) => setInputMail(e.target.value)} placeholder="Contact E-mail" />
+                <Input type="text" value={inputCell} onChange={(e) => setInputCell(e.target.value)} placeholder="Contact Phone Number" />
+                <Input type="text" value={inputAddress} onChange={(e) => setInputAddress(e.target.value)} placeholder="Contact Address" />
                 <Button
-                    ml={2}
+                    ml={2} px={6}
                     onClick={() => sendData()}
                 >
-                    Add Todo
+                    Add
                 </Button>
             </InputGroup>
 
@@ -104,17 +118,19 @@ const Todo = () => {
                         >
                             <Flex align="center">
                                 <Text fontSize="xl" mr={4}>{i + 1}.</Text>
-                                <Text><Link href={'/todos/' + item.eventID}>
-                                {item.eventTodo}</Link></Text>
+                                <Text><Link href={'/contacts/' + item.eventID}>{item.eventName}</Link></Text>
+                                <Text>... {item.eventMail}</Text>
+                                <Text>... {item.eventCell}</Text>
+                                <Text>... {item.eventAddress}</Text>
                             </Flex>
-                            <IconButton onClick={() => deleteTodo(item.eventID)} icon={<DeleteIcon />} />
+                            <IconButton onClick={() => deleteEvent(item.eventId)} icon={<DeleteIcon />} />
                         </Flex>
                     </React.Fragment>
                 )
             })}
             <Button style={{ backgroundColor: 'rgba(118,118,148,.25)' }}><a href="/" style={{ fontSize: "25px"}} p={2}>Go home</a></Button>
         </Flex>
-        </div>
+      </div>
     )
 }
 
@@ -130,4 +146,4 @@ export const getServerSideProps = withAuthUserTokenSSR({
 export default withAuthUser({
     whenUnauthedAfterInit: AuthAction.REDIRECT_TO_LOGIN,
     whenUnauthedBeforeInit: AuthAction.REDIRECT_TO_LOGIN,
-})(Todo)
+})(Event)

@@ -7,26 +7,22 @@ import firebase from 'firebase/app';
 import 'firebase/firestore';
 import Header from '../../components/Header';
 
-const SingleEvent = ({itemData}) => {
+const SingleTodo = ({itemData}) => {
   const AuthUser = useAuthUser();
-  const [inputName, setInputName] = useState(itemData.name);
-  const [inputDate, setInputDate] = useState(itemData.date);
-  const [inputDesc, setInputDesc] = useState(itemData.desc);
+  const [inputTodo, setInputTodo] = useState(itemData.todo);
   const [statusMsg, setStatusMsg] = useState('');
   
   const sendData = async () => {
     try {
       console.log("sending!");
       // try to update doc
-      const docref = await firebase.firestore().collection("events").doc(itemData.id);
+      const docref = await firebase.firestore().collection("todos").doc(itemData.id);
       const doc = docref.get();
 
       if (!doc.empty) {
         docref.update(
           {
-            name: inputName,
-            date: firebase.firestore.Timestamp.fromDate( new Date(inputDate) ),
-            desc: inputDesc
+            todo: inputTodo
           }
         );
         setStatusMsg("Updated!");
@@ -48,9 +44,7 @@ const SingleEvent = ({itemData}) => {
             pointerEvents="none"
             children={<AddIcon color="gray.300" />}
           />
-          <Input type="text" value={inputName} onChange={(e) => setInputName(e.target.value)} placeholder="Event Title" />
-          <Input type="text" value={inputDate} onChange={(e) => setInputDate(e.target.value)} placeholder="Event Date" />
-          <Input type="text" value={inputDesc} onChange={(e) => setInputDesc(e.target.value)} placeholder="Event Description" />
+          <Input type="text" value={inputTodo} onChange={(e) => setInputTodo(e.target.value)} placeholder="Name of Todo" />
           <Button
             ml={2}
             onClick={() => sendData()}
@@ -72,24 +66,22 @@ export const getServerSideProps = withAuthUserTokenSSR(
   }
 )(
   async ({ AuthUser, params }) => {
-    // take the id parameter from the url and construct a db query with it
+    //take the id parameter from the url and construct a db query with it
     const db = getFirebaseAdmin().firestore();
-    const doc = await db.collection("events").doc(params.id).get();
+    const doc = await db.collection("todos").doc(params.id).get();
     let itemData;
     if (!doc.empty) {
-      // document was found
+      // doc found
       let docData = doc.data();
       itemData = {
         id: doc.id,
-        name: docData.name,
-        date: docData.date.toDate().toDateString(),
-        desc: docData.desc
+        todo: docData.todo
       };
     } else {
-      // no document found
+      // no doc found
       itemData = null;
     }
-    // return the data
+    // return data
     return {
       props: {
         itemData
@@ -103,4 +95,4 @@ export default withAuthUser(
     whenUnauthedAfterInit: AuthAction.REDIRECT_TO_LOGIN,
     whenUnauthedBeforeInit: AuthAction.REDIRECT_TO_LOGIN
   }
-)(SingleEvent)
+)(SingleTodo)

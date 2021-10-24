@@ -1,6 +1,7 @@
-import React from 'react'
-import { withAuthUser, AuthAction } from 'next-firebase-auth'
-import FirebaseAuth from '../components/FirebaseAuth'
+import React from 'react';
+import { withAuthUser, AuthAction } from 'next-firebase-auth';
+import FirebaseAuth from '../components/FirebaseAuth';
+import DarkModeSwitch from '../components/DarkModeSwitch';
 
 const styles = {
   content: {
@@ -14,7 +15,7 @@ const styles = {
 }
 
 const Auth = () => (
-  <div style={styles.content}>
+  <div style={styles.content}><DarkModeSwitch />
     <h3>Sign in</h3>
     <div style={styles.textContainer}>
       <p>

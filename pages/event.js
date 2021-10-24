@@ -1,26 +1,14 @@
-import React, { useState, useEffect } from 'react'
-import {
-    Flex,
-    Heading,
-    InputGroup,
-    InputLeftElement,
-    Input,
-    Button,
-    Text,
-    IconButton,
-    Divider,
-} from "@chakra-ui/react"
-import DarkModeSwitch from '../components/DarkModeSwitch'
-import {
-    useAuthUser,
-    withAuthUser,
-    withAuthUserTokenSSR,
-    AuthAction,
-} from 'next-firebase-auth'
-import getAbsoluteURL from '../utils/getAbsoluteURL'
-import { AddIcon, DeleteIcon, StarIcon } from "@chakra-ui/icons"
-import firebase from 'firebase/app'
-import 'firebase/firestore'
+import React, { useState, useEffect } from 'react';
+import { Flex, Heading, InputGroup, InputLeftElement, Input, Button, Text, IconButton, Divider, Link,
+} from "@chakra-ui/react";
+import DarkModeSwitch from '../components/DarkModeSwitch';
+import { useAuthUser, withAuthUser, withAuthUserTokenSSR, AuthAction,
+} from 'next-firebase-auth';
+import getAbsoluteURL from '../utils/getAbsoluteURL';
+import { AddIcon, DeleteIcon, StarIcon } from "@chakra-ui/icons";
+import firebase from 'firebase/app';
+import 'firebase/firestore';
+import Header from '../components/Header';
 
 const Event = () => {
     const AuthUser = useAuthUser()
@@ -87,13 +75,12 @@ const Event = () => {
     }
 
     return (
-        <Flex flexDir="column" maxW={800} align="center" justify="center" minH="100vh" m="auto" px={4}>
+      <div>
+      <Header email={AuthUser.email} signOut={AuthUser.signOut} />
+        <Flex flexDir="column" maxW={800} align="center" justify="center" minH="60vh" m="auto" px={4}>
             <Flex justify="space-between" w="100%" align="center">
-                <Heading mb={4}>Welcome, {AuthUser.email}!</Heading>
-                <Flex>
-                    <DarkModeSwitch />
-                    <IconButton ml={2} onClick={AuthUser.signOut} icon={<StarIcon />} />
-                </Flex>
+                <Heading mb={4} pb={4} mt={-10}>Events</Heading>
+
             </Flex>
 
             <InputGroup>
@@ -126,7 +113,9 @@ const Event = () => {
                         >
                             <Flex align="center">
                                 <Text fontSize="xl" mr={4}>{i + 1}.</Text>
-                                <Text>{item.eventName}</Text>
+                                <Text><Link href={'/events/' + item.eventID}>
+                                {item.eventName}</Link>
+                                </Text>
                                 <Text>... {item.eventDate}</Text>
                                 <Text>... {item.eventDesc}</Text>
                             </Flex>
@@ -135,8 +124,9 @@ const Event = () => {
                     </React.Fragment>
                 )
             })}
-            <a href="/" style={{ fontSize: "25px", textDecoration: 'underline' }}>Go home</a>
+            <Button style={{ backgroundColor: 'rgba(118,118,148,.25)' }}><a href="/" style={{ fontSize: "25px"}} p={2}>Go home</a></Button>
         </Flex>
+      </div>
     )
 }
 
