@@ -48,11 +48,11 @@ const Home = ({ allData }) => {
           <br></br>
           <div className="list-group">
             {allData.map(({ id, name }) => (
-              <ul><li p={4} style={styles.bigFont}>
+              <p p={4} style={styles.bigFont}>
               <Link key={id} href={`/${id}`}>
                 <a className="list-group-item list-group-item-action" style={{ textDecoration: 'underline' }}>{name}</a>
-              </Link></li>
-              </ul>
+              </Link></p>
+              
             ))}
           </div>
         </div>
