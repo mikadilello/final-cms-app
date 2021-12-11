@@ -4,6 +4,8 @@ import { useAuthUser, withAuthUser, withAuthUserTokenSSR,
 import Header from '../components/Header';
 import DemoPageLinks from '../components/DemoPageLinks';
 import { Box, } from '@chakra-ui/react';
+import { getSortedList } from './lib/data';
+import Link from 'next/link';
 
 const styles = {
   content: {
@@ -20,7 +22,17 @@ const styles = {
   },
 }
 
-const Home = () => {
+export async function getStaticProps() {
+  const allData = await getSortedList();
+  return {
+    props: {
+      allData
+    },
+    revalidate: 60
+  }
+}
+
+const Home = ({ allData }) => {
   const AuthUser = useAuthUser()
   return (
     <div>
@@ -31,12 +43,24 @@ const Home = () => {
           <h2 p={2} style={styles.biggerFont}>Welcome to the Full Stack App!</h2>
           <br></br>
           <p p={4} style={styles.bigFont}>With a user account, you can keep track of <a href="/todo" style={{ textDecoration: 'underline' }}>what you need to do</a>, <a href="/event" style={{ textDecoration: 'underline' }}>upcoming events</a>, and <a href="/contact" style={{ textDecoration: 'underline' }}>your contacts!</a></p>
+          <br></br>
+          <h2 p={2} style={styles.biggerFont}>List of Posts</h2>
+          <br></br>
+          <div className="list-group">
+            {allData.map(({ id, name }) => (
+              <ul><li p={4} style={styles.bigFont}>
+              <Link key={id} href={`/${id}`}>
+                <a className="list-group-item list-group-item-action" style={{ textDecoration: 'underline' }}>{name}</a>
+              </Link></li>
+              </ul>
+            ))}
+          </div>
         </div>
       </div>
     </div>
   )
 }
 
-export const getServerSideProps = withAuthUserTokenSSR()()
+// export const getServerSideProps = withAuthUserTokenSSR()()
 
 export default withAuthUser()(Home)

@@ -65,6 +65,7 @@ const SingleContact = ({itemData}) => {
           {statusMsg}
         </Text>
       </Flex>
+      <Button style={{ backgroundColor: 'rgba(118,118,148,.25)' }}><a href="/contact" style={{ fontSize: "25px"}} p={2}>Return to Contacts</a></Button>
     </>
   );
 };
@@ -97,8 +98,9 @@ export const getServerSideProps = withAuthUserTokenSSR(
     return {
       props: {
         itemData
-      }
-    }
+      },
+      revalidate: 60
+    };
   }
 )
 

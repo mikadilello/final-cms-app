@@ -61,6 +61,7 @@ const SingleEvent = ({itemData}) => {
         <Text>
           {statusMsg}
         </Text>
+        <Button style={{ backgroundColor: 'rgba(118,118,148,.25)' }}><a href="/event" style={{ fontSize: "25px"}} p={2}>Return to Events</a></Button>
       </Flex>
     </>
   );

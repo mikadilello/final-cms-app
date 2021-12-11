@@ -55,6 +55,7 @@ const SingleTodo = ({itemData}) => {
         <Text>
           {statusMsg}
         </Text>
+        <Button style={{ backgroundColor: 'rgba(118,118,148,.25)' }}><a href="/todo" style={{ fontSize: "25px"}} p={2}>Return to Todos</a></Button>
       </Flex>
     </>
   );
