@@ -1,5 +1,6 @@
 const config = {
   webpack5: true,
+  fs: 'empty'
 }
 
 // eslint-disable-next-line import/no-extraneous-dependencies
