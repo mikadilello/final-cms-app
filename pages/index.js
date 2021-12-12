@@ -35,7 +35,7 @@ export async function getStaticProps() {
 const Home = ({ allData }) => {
   const AuthUser = useAuthUser()
   return (
-    <div>
+    <>
       <Header
         email={AuthUser.email} signOut={AuthUser.signOut} />
       <div style={styles.content}>
@@ -57,7 +57,7 @@ const Home = ({ allData }) => {
           </div>
         </div>
       </div>
-    </div>
+    </>
   )
 }
 
