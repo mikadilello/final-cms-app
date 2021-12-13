@@ -7,6 +7,7 @@ const config = {
             fs: false,
             http: false,
             stream: false,
+            https: false,
         }
     }
 
