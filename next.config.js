@@ -6,6 +6,7 @@ const config = {
         config.resolve.fallback = {
             fs: false,
             http: false,
+            stream: false,
         }
     }
 
