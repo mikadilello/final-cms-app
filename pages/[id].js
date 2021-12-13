@@ -1,6 +1,6 @@
 import Head from 'next/head';
 import Layout from '../components/layout';
-import { getAllIds, getData } from './lib/data';
+import { getAllIds, getData } from '../lib/data';
 import { Box, } from '@chakra-ui/react';
 
 const styles = {

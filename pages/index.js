@@ -4,7 +4,7 @@ import { useAuthUser, withAuthUser, withAuthUserTokenSSR,
 import Header from '../components/Header';
 import DemoPageLinks from '../components/DemoPageLinks';
 import { Box, } from '@chakra-ui/react';
-import { getSortedList } from './lib/data';
+import { getSortedList } from '../lib/data';
 import Link from 'next/link';
 
 const styles = {
